@@ -1,0 +1,19 @@
+---
+- name: update web servers
+  hosts: all
+  become: yes
+  vars:
+    user_name: Ravindra08
+
+  tasks:
+  - name: Web Page - Static
+    copy:
+      src: dynamic.j2
+      dest: /var/www/html/dynamic.html
+  
+  - name: Web Page - Dynamic
+    template:
+      src: dynamic.j2
+      dest: /var/www/html/info.html
+...
+

@@ -1,0 +1,23 @@
+---
+  - name: ensure git is present
+    package:
+      name: git
+      state: present
+
+  - name: ensure web server is installed
+    package:
+      name: httpd
+      state: present
+    notify:
+    - update app
+
+
+  - name: Ensure PHP is present
+    package:
+      name: php
+      state: present
+    notify:
+    - Restart HTTPD
+
+...
+

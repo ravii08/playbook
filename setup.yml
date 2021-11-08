@@ -1,0 +1,8 @@
+---
+- name: update web servers
+  hosts: web
+  become: yes
+  roles:
+    - apache
+
+...

@@ -1,0 +1,68 @@
+---
+- name: update web servers
+  hosts: centos
+  become: yes
+  vars:  
+    http_port: 80
+
+  handlers:
+  - name: update app
+    git:
+      repo: https://github.com/ravi2krishna/ecomm.git
+      dest: /var/www/html
+
+  - name: Restart HTTPD
+    service:
+      name: httpd
+      state: restarted
+
+  - name: ensure web server is started
+    service:
+      name: httpd
+      state: started
+
+  tasks:
+
+  - name: SELinux Permissive
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: ensure git is present
+    package:
+      name: git
+      state: present
+
+  - name: ensure web server is installed
+    package:
+      name: httpd
+      state: present
+    notify:
+    - update app
+
+  - name: ensure web server is enabled
+    service:
+      name: httpd
+      enabled: yes
+
+  - name: Modify Port
+    template:
+      src: httpd.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+    - Restart HTTPD
+
+  - name: Update PHP App
+    copy:
+      src: date.php
+      dest: /var/www/html/date.php
+
+  - name: Ensure PHP is present
+    package:
+      name: php
+      state: present
+    notify:
+    - Restart HTTPD
+
+...
+
